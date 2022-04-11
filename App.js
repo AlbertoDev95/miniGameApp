@@ -1,13 +1,14 @@
-import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
-import { StyleSheet, ImageBackground, SafeAreaView } from "react-native";
-import GameScreen from "./screens/GameScreen";
-import GameIsOverScreen from "./screens/GameOverScreen";
-import { LinearGradient } from "expo-linear-gradient";
-import AppLoading from "expo-app-loading";
+import { useState } from 'react';
+import { StyleSheet, ImageBackground, SafeAreaView } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useFonts } from 'expo-font';
+import AppLoading from 'expo-app-loading';
+import { StatusBar } from 'expo-status-bar';
 
-import StartGameScreen from "./screens/StartGameScreen";
-import { useFonts } from "expo-font";
+import StartGameScreen from './screens/StartGameScreen';
+import GameScreen from './screens/GameScreen';
+import GameOverScreen from './screens/GameOverScreen';
+import Colors from './constants/colors.android';
 
 export default function App() {
   const [userNumber, setUserNumber] = useState();
@@ -15,8 +16,8 @@ export default function App() {
   const [guessRounds, setGuessRounds] = useState(0);
 
   const [fontsLoaded] = useFonts({
-    "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
-    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+    'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
+    'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf'),
   });
 
   if (!fontsLoaded) {
@@ -32,10 +33,12 @@ export default function App() {
     setGameIsOver(true);
     setGuessRounds(numberOfRounds);
   }
+
   function startNewGameHandler() {
     setUserNumber(null);
     setGuessRounds(0);
   }
+
   let screen = <StartGameScreen onPickNumber={pickedNumberHandler} />;
 
   if (userNumber) {
@@ -46,25 +49,31 @@ export default function App() {
 
   if (gameIsOver && userNumber) {
     screen = (
-      <GameIsOverScreen
+      <GameOverScreen
         userNumber={userNumber}
-        roundNumber={guessRounds}
+        roundsNumber={guessRounds}
         onStartNewGame={startNewGameHandler}
       />
     );
   }
 
   return (
-    <LinearGradient colors={["#ddb52f", "#4e0329"]} style={styles.rootScreen}>
-      <ImageBackground
-        source={require("./assets/images/dados.jpg")}
-        resizeMode="cover"
+    <>
+      <StatusBar style="light" />
+      <LinearGradient
+        colors={[Colors.primary700, Colors.accent500]}
         style={styles.rootScreen}
-        imageStyle={styles.backgroundImage}
       >
-        <SafeAreaView style={styles.rootScreen}>{screen}</SafeAreaView>
-      </ImageBackground>
-    </LinearGradient>
+        <ImageBackground
+          source={require('./assets/images/background.png')}
+          resizeMode="cover"
+          style={styles.rootScreen}
+          imageStyle={styles.backgroundImage}
+        >
+          <SafeAreaView style={styles.rootScreen}>{screen}</SafeAreaView>
+        </ImageBackground>
+      </LinearGradient>
+    </>
   );
 }
 
